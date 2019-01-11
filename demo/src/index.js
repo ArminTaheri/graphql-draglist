@@ -10,7 +10,9 @@ const initialList = [
   { content: "element 4" }
 ];
 
-const Paper = ({ children }) => <div>{children}</div>;
+const Paper = ({ children }) => (
+  <div style={{ border: "solid 1px" }}>{children}</div>
+);
 
 const Demo = () => {
   const [list, setList] = React.useState(initialList);
