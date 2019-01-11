@@ -112,25 +112,29 @@ const DragList = ({
         />
         {filteredList.map((item, i) => {
           return (
-            <div
-              key={i}
-              className={styles.element}
-              onMouseDown={e => {
-                const { top, height } = e.currentTarget.getBoundingClientRect();
+            <div key={i}>
+              <div
+                className={styles.element}
+                onMouseDown={e => {
+                  const {
+                    top,
+                    height
+                  } = e.currentTarget.getBoundingClientRect();
 
-                setInsertion({
-                  index: i,
-                  item,
-                  slider: {
-                    height,
-                    top0: top,
-                    y0: e.clientY,
-                    y: e.clientY
-                  }
-                });
-              }}
-            >
-              {renderItem(item, i)}
+                  setInsertion({
+                    index: i,
+                    item,
+                    slider: {
+                      height,
+                      top0: top,
+                      y0: e.clientY,
+                      y: e.clientY
+                    }
+                  });
+                }}
+              >
+                {renderItem(item, i)}
+              </div>
               <InsertionSlot
                 index={i + 1}
                 insertion={insertion}
