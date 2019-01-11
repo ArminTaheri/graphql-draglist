@@ -11,7 +11,9 @@ const initialList = [
 ];
 
 const Paper = ({ children }) => (
-  <div style={{ border: "solid 1px" }}>{children}</div>
+  <div style={{ padding: "15px", width: "300px", border: "solid 1px" }}>
+    {children}
+  </div>
 );
 
 const Demo = () => {

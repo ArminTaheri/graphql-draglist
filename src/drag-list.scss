@@ -1,7 +1,7 @@
-.drag-list {
-  position: relative;
+.dragList {
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 
 .slider {
@@ -9,19 +9,15 @@
 
   .slidingElement {
     position: absolute;
-    width: 100%;
-    transition: top 0.1s;
   }
 }
 
 .elements {
   position: absolute;
-  width: 100%;
-  height: 100%;
 }
 
 .element {
-  padding: 10px;
+  user-select: none;
 }
 
 .insertionSlot {

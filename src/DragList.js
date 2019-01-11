@@ -39,20 +39,13 @@ const InsertionSlot = ({
 }) => {
   return (
     <div
-      spacing={spacing}
       style={{
         height:
-          spacing +
+          (insertion ? 2 : 1) * spacing +
           (insertion && insertion.index === index ? insertion.slider.height : 0)
       }}
-      onMouseEnter={() => {
+      onPointerOver={() => {
         insertion && setInsertion({ ...insertion, index: index });
-      }}
-      onMouseUp={() => {
-        if (insertion) {
-          setList(R.insert(index, insertion.item, list));
-          setInsertion(null);
-        }
       }}
       className={styles.insertionSlot}
     />
@@ -67,7 +60,6 @@ const DragList = ({
   renderItem,
   spacing
 }: DragListProps) => {
-  console.log(insertion);
   const filteredList = insertion
     ? list.filter(item => !R.equals(insertion.item, item))
     : list;
@@ -81,13 +73,21 @@ const DragList = ({
   return (
     <div
       className={styles.dragList}
-      onMouseMove={e =>
-        insertion &&
-        setInsertion({
-          ...insertion,
-          slider: { ...insertion.slider, y: e.clientY }
-        })
-      }
+      onPointerUp={() => {
+        if (insertion) {
+          setList(R.insert(insertion.index, insertion.item, filteredList));
+          setInsertion(null);
+        }
+      }}
+      onPointerMove={e => {
+        if (insertion) {
+          e.preventDefault();
+          setInsertion({
+            ...insertion,
+            slider: { ...insertion.slider, y: e.clientY }
+          });
+        }
+      }}
     >
       <div className={styles.slider}>
         {insertion && (
@@ -115,7 +115,7 @@ const DragList = ({
             <div key={i}>
               <div
                 className={styles.element}
-                onMouseDown={e => {
+                onPointerDown={e => {
                   const {
                     top,
                     height
