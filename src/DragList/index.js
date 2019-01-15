@@ -4,8 +4,13 @@ import * as R from "ramda";
 import React from "react";
 import type { Node } from "react";
 import classnames from "classnames";
+import {
+  useDragReleaseEffect,
+  usePickItemEffect,
+  usePickInsertionSlotEffect
+} from "./hooks";
 
-import styles from "./drag-list.scss";
+import styles from "./styles.scss";
 
 type ListItem = { content: any };
 
@@ -15,8 +20,7 @@ type Insertion = {
   slider: {
     height: number,
     top0: number,
-    y0: number,
-    y: number
+    deltaY: number
   }
 };
 
@@ -29,26 +33,39 @@ type DragListProps = {
   spacing: number
 };
 
-const InsertionSlot = ({
-  index,
-  insertion,
-  setInsertion,
-  list,
-  setList,
-  spacing
-}) => {
+const InsertionSlot = ({ index, list, insertion, setInsertion, spacing }) => {
+  const pickInsertionSlotEffectRef = usePickInsertionSlotEffect(
+    index,
+    list,
+    insertion,
+    setInsertion
+  );
+
   return (
     <div
+      ref={pickInsertionSlotEffectRef}
       style={{
         height:
           (insertion ? 2 : 1) * spacing +
           (insertion && insertion.index === index ? insertion.slider.height : 0)
       }}
-      onPointerOver={() => {
-        insertion && setInsertion({ ...insertion, index: index });
-      }}
       className={styles.insertionSlot}
     />
+  );
+};
+
+const DragListItem = ({ index, list, insertion, setInsertion, children }) => {
+  const pickItemEffectRef = usePickItemEffect(
+    index,
+    list,
+    insertion,
+    setInsertion
+  );
+
+  return (
+    <div ref={pickItemEffectRef} className={styles.element}>
+      {children}
+    </div>
   );
 };
 
@@ -63,32 +80,18 @@ const DragList = ({
   const filteredList = insertion
     ? list.filter(item => !R.equals(insertion.item, item))
     : list;
+
   const slidingElement = insertion ? renderItem(insertion.item, 0) : null;
 
-  const topFromInsertion = ({ slider }) => {
-    const { top0, y0, y } = slider;
-    return top0 + (y - y0);
+  const topFromInsertion = insertion => {
+    const { top0, deltaY } = insertion.slider;
+    return top0 + deltaY;
   };
 
+  const dragReleaseEffectRef = useDragReleaseEffect(insertion, setInsertion);
+
   return (
-    <div
-      className={styles.dragList}
-      onPointerUp={() => {
-        if (insertion) {
-          setList(R.insert(insertion.index, insertion.item, filteredList));
-          setInsertion(null);
-        }
-      }}
-      onPointerMove={e => {
-        if (insertion) {
-          e.preventDefault();
-          setInsertion({
-            ...insertion,
-            slider: { ...insertion.slider, y: e.clientY }
-          });
-        }
-      }}
-    >
+    <div ref={dragReleaseEffectRef} className={styles.dragList}>
       <div className={styles.slider}>
         {insertion && (
           <div
@@ -113,28 +116,14 @@ const DragList = ({
         {filteredList.map((item, i) => {
           return (
             <div key={i}>
-              <div
-                className={styles.element}
-                onPointerDown={e => {
-                  const {
-                    top,
-                    height
-                  } = e.currentTarget.getBoundingClientRect();
-
-                  setInsertion({
-                    index: i,
-                    item,
-                    slider: {
-                      height,
-                      top0: top,
-                      y0: e.clientY,
-                      y: e.clientY
-                    }
-                  });
-                }}
+              <DragListItem
+                index={i}
+                list={filteredList}
+                insertion={insertion}
+                setInsertion={setInsertion}
               >
                 {renderItem(item, i)}
-              </div>
+              </DragListItem>
               <InsertionSlot
                 index={i + 1}
                 insertion={insertion}
