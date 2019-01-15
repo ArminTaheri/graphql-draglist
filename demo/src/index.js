@@ -1,37 +1,15 @@
 import React from "react";
 import { render } from "react-dom";
 
-import { DragList } from "../../src";
+import Demo from "./Demo";
 
-const initialList = [
-  { content: "element 1" },
-  { content: "element 2" },
-  { content: "element 3" },
-  { content: "element 4" }
-];
-
-const Paper = ({ children }) => (
-  <div style={{ padding: "15px", width: "300px", border: "solid 1px" }}>
-    {children}
-  </div>
-);
-
-const Demo = () => {
-  const [list, setList] = React.useState(initialList);
-  const [insertion, setInsertion] = React.useState(null);
-
+const App = () => {
   return (
     <div>
       <h1>graphql-draglist Demo</h1>
-      <DragList
-        list={list}
-        setList={setList}
-        insertion={insertion}
-        setInsertion={setInsertion}
-        renderItem={(item, i) => <Paper key={i}>{item.content}</Paper>}
-      />
+      <Demo />
     </div>
   );
 };
 
-render(<Demo />, document.querySelector("#demo"));
+render(<App />, document.querySelector("#demo"));
