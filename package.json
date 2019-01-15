@@ -25,6 +25,7 @@
     "classnames": "^2.2.6",
     "empty": "^0.10.1",
     "graphql": "^14.0.2",
+    "hammerjs": "^2.0.8",
     "ramda": "^0.26.1",
     "react-apollo": "^2.3.3",
     "react-transition-group": "^2.5.2"
@@ -41,6 +42,7 @@
     "eslint-config-react-app": "^3.0.4",
     "eslint-import-resolver-babel-module": "^4.0.0",
     "eslint-plugin-flowtype": "^2.50.3",
+    "eslint-plugin-graphql": "^3.0.1",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-prettier": "^2.6.0",
